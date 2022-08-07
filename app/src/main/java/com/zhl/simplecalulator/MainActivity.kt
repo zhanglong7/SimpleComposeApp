@@ -38,7 +38,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
 @Composable
 fun PageContent() {
     var displayText by remember{ mutableStateOf(Calculation.calculationString) }
@@ -53,7 +52,7 @@ fun PageContent() {
         DisplayArea(text = displayText,
             text2 = result)
         Divider(Modifier.weight(0.6f), Color.Transparent)
-        ButtonsArea(Modifier.weight(1f)) {
+        ButtonsArea {
             Calculation.input(it.code)
             displayText = Calculation.calculationString
             val tmp = Calculation.calculate().toString()
@@ -96,11 +95,11 @@ fun ButtonsArea(modifier: Modifier = Modifier, onButtonClick: (CalculatorButton)
     if (isScreenPortrait) {
         Column(modifier.fillMaxWidth()) {
             DeleteButton(onButtonClick, Modifier.align(Alignment.End))
-            ButtonsMainPart(onButtonClick)
+            ButtonsMainPart(onButtonClick, Modifier.height(300.dp))
         }
     } else {
         Row(modifier) {
-            ButtonsMainPart(onButtonClick, Modifier.weight(4f))
+            ButtonsMainPart(onButtonClick, Modifier.weight(4f).height(180.dp))
             Column(Modifier.weight(1f)) {
                 DeleteButton(onButtonClick, Modifier.align(Alignment.CenterHorizontally))
             }
