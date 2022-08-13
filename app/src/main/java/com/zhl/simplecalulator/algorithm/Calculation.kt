@@ -37,6 +37,11 @@ object Calculation {
         }
     }
 
+    fun updateCalculation(string: String) {
+        calculationString = string
+        state = if (string.contains(CHAR_POINT)) State.POINT_NUMBER else State.NUMBER
+    }
+
     private fun inputDelete() {
         if (state != State.INIT) {
             calculationString.lastOrNull()?.let {

@@ -4,7 +4,9 @@ import android.content.res.Configuration.ORIENTATION_PORTRAIT
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,8 +14,10 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,7 +54,10 @@ fun PageContent() {
     }
     Column {
         DisplayArea(text = displayText,
-            text2 = result)
+            text2 = result) {
+            Calculation.updateCalculation(result)
+            displayText = Calculation.calculationString
+        }
         Divider(Modifier.weight(0.6f), Color.Transparent)
         ButtonsArea {
             Calculation.input(it.code)
@@ -62,7 +69,7 @@ fun PageContent() {
 }
 
 @Composable
-fun DisplayArea( modifier: Modifier = Modifier, text: String, text2: String = "") {
+fun DisplayArea(modifier: Modifier = Modifier, text: String, text2: String = "", onArrowClick: () -> Unit = {}) {
     Column(
         modifier
             .padding(8.dp)
@@ -75,14 +82,28 @@ fun DisplayArea( modifier: Modifier = Modifier, text: String, text2: String = ""
         if (text2.isNotEmpty()) {
             Row {
                Text("=",
-                   modifier.weight(1f).padding(start = 12.dp),
+                   modifier
+                       .weight(1f)
+                       .padding(start = 12.dp),
                    color = Color.Green,
                    fontSize = 30.sp
                )
                Text(text = text2,
-                   Modifier.padding(end = 12.dp),
                    fontSize = 30.sp
                )
+                Icon(
+                    painterResource(id = R.drawable.ic_baseline_arrow_upward_16),
+                    null,
+                    Modifier
+                        .padding(horizontal = 12.dp)
+                        .align(Alignment.CenterVertically)
+                        .clickable(onClick = onArrowClick)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colors.primary)
+                        .padding(4.dp),
+                    tint = Color.White
+                )
+
             }
         }
     }
@@ -99,7 +120,10 @@ fun ButtonsArea(modifier: Modifier = Modifier, onButtonClick: (CalculatorButton)
         }
     } else {
         Row(modifier) {
-            ButtonsMainPart(onButtonClick, Modifier.weight(4f).height(180.dp))
+            ButtonsMainPart(onButtonClick,
+                Modifier
+                    .weight(4f)
+                    .height(180.dp))
             Column(Modifier.weight(1f)) {
                 DeleteButton(onButtonClick, Modifier.align(Alignment.CenterHorizontally))
             }
